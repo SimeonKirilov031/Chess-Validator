@@ -140,16 +140,17 @@ function showPawns(){
         function asd(){
       if (oldPosX + oldPosY == arei[i]){
         let figureType = arei[i].name;
-        if (figureType == 'rook'){
+        switch(figureType){
+        case 'rook':
           if(oldPosX != newPosX && oldPosY != newPosY){
             console.log('WRONG');
           }
             else{
               arei[i].posX = newPosX;
               arie[i].posY = newPosY;
-            };
-          }
-          else if(figureType == 'bishop'){
+            break;
+          
+          case 'bishop':
             if(abs(oldPosX.charCodeAt(0)-96 - newPosX.charCodeAt(0) - 96) != abs(oldPosY - newPosY)){
               console.log('WRONG');
             }
@@ -157,18 +158,17 @@ function showPawns(){
               arei[i].posX = newPosX;
               arie[i].posY = newPosY;
             }
-          }
-          else if(figureType == 'queen'){
+          break;
+          case 'queen':
             if(oldPosX != newPosX && oldPosY != newPosY || abs(oldPosX.charCodeAt(0)-96 - newPosX) != abs(oldPosY - newPosY)){
               console.log('WRONG');
             }
               else{
                 arei[i].posX = newPosX;
                 arie[i].posY = newPosY;
-              };
-            };
-          }
-          else if(figureType == 'knight'){
+              }  
+            break;
+          case 'knight':
             if(abs((oldPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96) == 3 && abs(oldPosY - newPosY == 1) ||
             abs((newPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96)) == 1 && abs(oldPosY - newPosY) == 3)){
               arei[i].posX = newPosX;
@@ -178,8 +178,8 @@ function showPawns(){
               console.log('WRONG');
             }
 
-          }
-          else if(figureType == 'pawn'){
+          break;
+          case 'pawn':
             if (this.colour == 'white'){
               if(oldPosX != newPosX || newPosY - oldPosY != 1){
                 console.log('WRONG');
@@ -198,8 +198,8 @@ function showPawns(){
                 arei[i].posY = newPosY;
             }
             }
-          }
-          else if(figureType == 'king'){
+          break;
+          case 'king':
             if (oldPosX != newPosX && oldPosY != newPosY || abs(oldPosX.charCodeAt(0)-96 - newPosX) != abs(oldPosY - newPosY) || 
               (abs(oldPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96)) != 1 || abs(oldPosY - newPosY) != 1 ){
                 console.log('WRONG');
@@ -209,5 +209,9 @@ function showPawns(){
                 arei[i].posY = newPosY;
               }
           }
+          break;
+          default:
+            console.log('empty square');
           };
-      };*/
+      };
+*/
