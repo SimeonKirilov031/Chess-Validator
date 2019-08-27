@@ -129,9 +129,9 @@ function showPawns(){
     };
 
 
-   /* 
+   /*
    
-    // Rook, Bishop, and Queen pieces validation for later integration
+    //  pieces move validation for later integration
 
    function move (oldPosX, oldPosY, newPosX, newPosY){
       arei.forEach(asd);
@@ -164,12 +164,50 @@ function showPawns(){
             }
               else{
                 arei[i].posX = newPosX;
-                arie[old].posY = newPosY;
+                arie[i].posY = newPosY;
               };
             };
           }
           else if(figureType == 'knight'){
+            if(abs((oldPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96) == 3 && abs(oldPosY - newPosY == 1) ||
+            abs((newPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96)) == 1 && abs(oldPosY - newPosY) == 3)){
+              arei[i].posX = newPosX;
+              arei[i].posY = newPosY;
+            }
+            else{
+              console.log('WRONG');
+            }
 
+          }
+          else if(figureType == 'pawn'){
+            if (this.colour == 'white'){
+              if(oldPosX != newPosX || newPosY - oldPosY != 1){
+                console.log('WRONG');
+              }
+              else{
+                arei[i].posX = newPosX;
+                arei[i].posY = newPosY;
+            }
+            }
+            else if(this.colour == 'black'){
+              if(oldPosX != newPosX || oldPosY - newPosY != 1){
+                console.log('WRONG');
+              }
+              else{
+                arei[i].posX = newPosX;
+                arei[i].posY = newPosY;
+            }
+            }
+          }
+          else if(figureType == 'king'){
+            if (oldPosX != newPosX && oldPosY != newPosY || abs(oldPosX.charCodeAt(0)-96 - newPosX) != abs(oldPosY - newPosY) || 
+              (abs(oldPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96)) != 1 || abs(oldPosY - newPosY) != 1 ){
+                console.log('WRONG');
+              } 
+              else{
+                arei[i].posX = newPosX;
+                arei[i].posY = newPosY;
+              }
           }
           };
       };*/
