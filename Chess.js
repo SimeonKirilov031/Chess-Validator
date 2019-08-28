@@ -1,7 +1,7 @@
 
 
 //
-// Simple function to increment and decrement letters
+// Simple functions to increment and decrement letters
   function nextChar(c) {
   return String.fromCharCode(c.charCodeAt(0) + 1);
 };
@@ -214,19 +214,17 @@ return flag;
 
 function bishopCheck(ox, oy, nx, ny){
   let flag = true;
-  console.log(chess);
   if(ox < nx && oy < ny){
     do{
-      console.log(ox);
     ox = nextChar(ox);
     oy++;  
-    console.log(chess[ox+oy]);
     if(chess[ox+oy] != ''){
       flag = false;
       break;
     }
   }
     while(oy < ny);
+    console.log(flag);
   }
   else if(ox < nx && oy > ny){
     do{
@@ -264,7 +262,7 @@ function bishopCheck(ox, oy, nx, ny){
   }
   return flag;
 }
-   
+
    
     //  pieces move validation for later integration
 
@@ -289,11 +287,11 @@ function bishopCheck(ox, oy, nx, ny){
             }
           break;
           case 'queen':
-            if(oldPosX != newPosX && oldPosY != newPosY || Math.abs(oldPosX.charCodeAt(0)-96 - newPosX) != Math.abs(oldPosY - newPosY)){
-              console.log('WRONG');
+            if(oldPosX == newPosX && oldPosY != newPosY && rookCheck(oldPosX, oldPosY, newPosX, newPosY)==true || oldPosX != newPosX && oldPosY == newPosY && rookCheck(oldPosX, oldPosY, newPosX, newPosY)==true || Math.abs((oldPosX.charCodeAt(0)-96) - (newPosX.charCodeAt(0) - 96)) == Math.abs(oldPosY - newPosY) && bishopCheck(oldPosX, oldPosY, newPosX, newPosY) == true){
+              moveInArray(oldPosX, oldPosY, newPosX, newPosY);
             }
               else{
-                moveInArray(oldPosX, oldPosY, newPosX, newPosY);
+                console.log('WRONG');
               }  
             break;
           case 'knight':
