@@ -106,8 +106,8 @@ wk2 = new knight('g', 1, 'white', false);
 chess['g1'] = wk2;
 bk1 = new knight('b', 8, 'black', false);
 chess['b8'] = bk1;
-bk2 = new knight('h', 8, 'black', false);
-chess['h8'] = bk2;
+bk2 = new knight('g', 8, 'black', false);
+chess['g8'] = bk2;
 wb1 = new bishop('c', 1, 'white', false);
 chess['c1'] = wb1;
 wb2 = new bishop('f', 1, 'white', false);
@@ -410,10 +410,13 @@ function knightCheck(nx,ny){
 
 
 function castling(ox,oy,nx,ny){
-  let buff;
+  let swap = [];
   buff = chess[ox+oy];
+  console.log(buff);
   chess[ox+oy] = chess[nx+ny];
-  chess[nx+ny] = buff;
+  chess[nx+ny] = buff[0];
+  console.log(chess[ox+oy]);
+  console.log(chess[nx+ny]);
 }
 
    
@@ -429,7 +432,7 @@ function castling(ox,oy,nx,ny){
          let figureType = chess[oldPosX + oldPosY].name;
         switch(figureType){
         case 'rook':
-          if(chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && oldPosX == newPosX && oldPosY != newPosY && rookCheckCap(oldPosX, oldPosY, newPosX, newPosY)==true || oldPosX != newPosX && oldPosY == newPosY && rookCheckCap(oldPosX, oldPosY, newPosX, newPosY && chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour)==true){
+          if(chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && oldPosX == newPosX && oldPosY != newPosY && rookCheckCap(oldPosX, oldPosY, newPosX, newPosY)==true || oldPosX != newPosX && oldPosY == newPosY && rookCheckCap(oldPosX, oldPosY, newPosX, newPosY)==true && chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour){
             capture(oldPosX, oldPosY, newPosX, newPosY);
           }
           else if(oldPosX != newPosX && oldPosY != newPosY || rookCheck(oldPosX, oldPosY, newPosX, newPosY)==false ){
@@ -445,12 +448,12 @@ function castling(ox,oy,nx,ny){
             if(chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && Math.abs((oldPosX.charCodeAt(0)-96) - (newPosX.charCodeAt(0) - 96)) == Math.abs(oldPosY - newPosY) && bishopCheckCap(oldPosX, oldPosY, newPosX, newPosY) == true){
               capture(oldPosX, oldPosY, newPosX, newPosY);
             }
-            else if(Math.abs((oldPosX.charCodeAt(0)-96) - (newPosX.charCodeAt(0) - 96)) != Math.abs(oldPosY - newPosY) || bishopCheck(oldPosX, oldPosY, newPosX, newPosY) == false){
-              console.log('WRONG');
-              document.getElementById("asd").innerHTML = "Wrong move";
+            else if(Math.abs((oldPosX.charCodeAt(0)-96) - (newPosX.charCodeAt(0) - 96)) == Math.abs(oldPosY - newPosY) && bishopCheckCap(oldPosX, oldPosY, newPosX, newPosY) == true){
+              moveInArray(oldPosX, oldPosY, newPosX, newPosY);
             }
             else{
-              moveInArray(oldPosX, oldPosY, newPosX, newPosY);
+              console.log('WRONG');
+              document.getElementById("asd").innerHTML = "Wrong move";
             }
           break;
           case 'queen':
@@ -513,14 +516,15 @@ function castling(ox,oy,nx,ny){
             }
           break;
           case 'king':
+            if (rookCheck(oldPosX,oldPosY,newPosX, newPosY) == true && chess[newPosX+newPosY].name=='rook' && chess[oldPosX+oldPosY].colour == chess[newPosX,newPosY].colour){
+                castling(oldPosX,oldPosY,newPosX,newPosY);
+            }
             if(chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && Math.abs(oldPosX.charCodeAt(0) - oldPosY.charCodeAt(0)) == 1 && newPosY == oldPosY ||
             chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && Math.abs(oldPosY - newPosY) == 1 && oldPosX == newPosX ||
             chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && Math.abs(oldPosY - newPosY) == 1 && Math.abs(oldPosX.charCodeAt(0) - newPosX.charCodeAt(0)) == 1 ) {
               capture(oldPosX, oldPosY, newPosX, newPosY);
             }
-            else if (rookCheck(oldPosX,oldPosY,newPosX, newPosY) == true && chess[newPosX+newPosY].name=='rook' && chess[oldPosX+oldPosY].colour == chess[newPosX,newPosY].colour){
-              castling(oldPosX,oldPosY,newPosX,newPosY);
-            }
+            
             else if (chess[newPosX+newPosY] == '' && Math.abs(oldPosX.charCodeAt(0) - oldPosY.charCodeAt(0)) == 1 && newPosY == oldPosY || chess[newPosX+newPosY] == '' && Math.abs(oldPosY - newPosY) == 1 && oldPosX == newPosX || chess[newPosX+newPosY] == '' && Math.abs(oldPosY - newPosY) == 1 && Math.abs(oldPosX.charCodeAt(0) - newPosX.charCodeAt(0)) == 1){
                 moveInArray(oldPosX, oldPosY, newPosX, newPosY);
               } 
