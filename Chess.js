@@ -160,6 +160,7 @@ function moveInArray(ox, oy, nx, ny){
       console.log('eh');
       turn = !turn;
       document.getElementById("asd").innerHTML = "Correct";
+
       }
 };
 
@@ -534,34 +535,3 @@ function castling(ox,oy,nx,ny){
             document.getElementById("asd").innerHTML = "Empty square";
           }
           };
-
-
-
-function drawBoard(){
-  table[heck] = chess[String.fromCharCode(ii).toLowerCase() + jj].name;
-}
-/*var chess = [];
-for (i = 65; i <= 72; i++) {
-     for(j=1; j<9; j++) {
-         chess[String.fromCharCode(i).toLowerCase() + j] = "";
-     }
-    }
-*/
-
-      let ii = 65;
-      let jj = 1;
-      let table = [];
-      let table1 = [];
-      for (var i =0; i < 8; i++){
-        table[i] = chess[String.fromCharCode(ii).toLowerCase() + jj].name;
-        ii++;
-    }
-  jj++;
-  ii = 65;
-  for (var i =0; i < 8; i++){
-    table1[i] = chess[String.fromCharCode(ii).toLowerCase() + jj].name;
-    ii++;
-}
-
-    document.getElementById("table").innerHTML = table + '<br>' + table1;
-    
