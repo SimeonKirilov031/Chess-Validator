@@ -71,7 +71,7 @@ class queen {
     };
 };
 
-
+// Create chess board
 var chess = [];
 for (i = 65; i <= 72; i++) {
      for(j=1; j<9; j++) {
@@ -465,7 +465,11 @@ function castling(ox,oy,nx,ny){
               }  
             break;
           case 'knight':
-            if(Math.abs((oldPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96)) == 2 && Math.abs(oldPosY - newPosY == 1) && knightCheck(newPosX, newPosY) == true ||
+            if(chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && Math.abs((oldPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96)) == 2 && Math.abs(oldPosY - newPosY == 1) && knightCheck(newPosX, newPosY) == true ||
+            chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && Math.abs((oldPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96)) == 1 && Math.abs(oldPosY - newPosY) == 2){
+              capture(oldPosX, oldPosY, newPosX, newPosY);
+            }
+            else if(Math.abs((oldPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96)) == 2 && Math.abs(oldPosY - newPosY == 1) && knightCheck(newPosX, newPosY) == true ||
             Math.abs((oldPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96)) == 1 && Math.abs(oldPosY - newPosY) == 2){
               moveInArray(oldPosX, oldPosY, newPosX, newPosY);
             }
@@ -477,8 +481,10 @@ function castling(ox,oy,nx,ny){
           break;
           case 'pawn':
             if (chess[oldPosX+oldPosY].colour == 'white'){
-              
-              if(oldPosX == newPosX && oldPosY == 2 && newPosY - oldPosY < 3 && rookCheck(oldPosX, oldPosY, newPosX, newPosY) == true){
+              if(chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour  && newPosY - oldPosY == 1 && Math.abs(oldPosX.charCodeAt(0) - newPosX.charCodeAt(0)) == 1){
+                capture(oldPosX, oldPosY, newPosX, newPosY);
+              }
+              else if(oldPosX == newPosX && oldPosY == 2 && newPosY - oldPosY < 3 && rookCheck(oldPosX, oldPosY, newPosX, newPosY) == true){
                 moveInArray(oldPosX, oldPosY, newPosX, newPosY);
               }
               else if(oldPosX == newPosX && newPosY - oldPosY < 2 && rookCheck(oldPosX, oldPosY, newPosX, newPosY) == true){
@@ -490,7 +496,10 @@ function castling(ox,oy,nx,ny){
             }
             }
             else if(chess[oldPosX+oldPosY].colour == 'black'){
-              if(oldPosX == newPosX && oldPosY == 7 && oldPosY - newPosY < 3 && rookCheck(oldPosX, oldPosY, newPosX, newPosY) == true){
+              if(chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour  && oldPosY - newPosY == 1 && Math.abs(oldPosX.charCodeAt(0) - newPosX.charCodeAt(0)) == 1){
+                capture(oldPosX, oldPosY, newPosX, newPosY);
+              }
+              else if(oldPosX == newPosX && oldPosY == 7 && oldPosY - newPosY < 3 && rookCheck(oldPosX, oldPosY, newPosX, newPosY) == true){
                 moveInArray(oldPosX, oldPosY, newPosX, newPosY);
               }
               else if(oldPosX == newPosX && oldPosY - newPosY < 2 && rookCheck(oldPosX, oldPosY, newPosX, newPosY) == true){
@@ -526,4 +535,33 @@ function castling(ox,oy,nx,ny){
           }
           };
 
-      
+
+
+function drawBoard(){
+  table[heck] = chess[String.fromCharCode(ii).toLowerCase() + jj].name;
+}
+/*var chess = [];
+for (i = 65; i <= 72; i++) {
+     for(j=1; j<9; j++) {
+         chess[String.fromCharCode(i).toLowerCase() + j] = "";
+     }
+    }
+*/
+
+      let ii = 65;
+      let jj = 1;
+      let table = [];
+      let table1 = [];
+      for (var i =0; i < 8; i++){
+        table[i] = chess[String.fromCharCode(ii).toLowerCase() + jj].name;
+        ii++;
+    }
+  jj++;
+  ii = 65;
+  for (var i =0; i < 8; i++){
+    table1[i] = chess[String.fromCharCode(ii).toLowerCase() + jj].name;
+    ii++;
+}
+
+    document.getElementById("table").innerHTML = table + '<br>' + table1;
+    
