@@ -9,6 +9,11 @@ function prevChar(c) {
   return String.fromCharCode(c.charCodeAt(0) - 1);
 };
 
+function outputWrong(){
+  console.log('Wrong move');
+  
+}
+
 const textBox1Val =(document.getElementById('Text1').value);
 let turn = true;
                     // Create figure classes based on type
@@ -20,7 +25,67 @@ class pawn {
         this.dead = dead;
         this.name = 'pawn';
     };
+      movePiece(nx, ny){
+        if (this.colour == 'white'){
+          if(chess[nx+ny] != '' && this.colour != chess[nx+ny].colour  && ny - this.posY == 1 && Math.abs(oldPosX.charCodeAt(0) - nx.charCodeAt(0)) == 1){
+            capture(this.posX, this.posY, nx, ny);
+          }
+          else if(this.posX == nx && this.posY == 2 && ny - this.posY < 3 && this.checkPath(this.posX, this.posY, nx, ny) == true){
+            moveInArray(this.posX, this.posY, nx, ny);
+          }
+          else if(this.posX == nx && ny - this.posY < 2 && this.checkPath(this.posX, this.posY, nx, ny) == true){
+            moveInArray(this.posX, this.posY, nx, ny);
+          }
+          else{
+            outputWrong();
+
+        }
+        }
+        else if(this.colour == 'black'){
+          if(chess[nx+ny] != '' && this.colour != chess[nx+ny].colour  && this.posY - ny == 1 && Math.abs(this.posX.charCodeAt(0) - nx.charCodeAt(0)) == 1){
+            capture(this.posX, this.posY, nx, ny);
+          }
+          else if(this.posX == nx && this.posY == 7 && this.posY - ny < 3 && this.checkPath(this.posX, this.posY, nx, ny) == true){
+            moveInArray(this.posX, this.posY, nx, ny);
+          }
+          else if(this.posX == nx && this.posY - ny < 2 && this.checkPath(this.posX, this.posY, nx, ny) == true){
+            moveInArray(this.posX, this.posY, nx, ny);
+          }
+          else{
+            outputWrong();
+
+        }
+        }
+      }
+      checkPath(ox, oy, nx,ny){
+        let flag = true;
+  if(oy < ny){
+  do{
+    oy++;
+    if(chess[ox+oy] != ''){
+      flag = false;
+      break;
+    }
+  }
+    while(oy < ny);
+    }
+else if(oy > ny){
+  do{
+    oy--;
+    if(chess[ox+oy] != ''){
+      flag = false;
+      break;
+    }
+  }
+    while(oy > ny);
+
+    }
+return flag;
+      }
+
 };
+
+      
 
 class rook {
     constructor(posX, posY, colour, dead, name){
@@ -30,6 +95,121 @@ class rook {
         this.dead = dead; 
         this.name = 'rook';
     };
+    movePiece(nx,ny){
+      if(chess[nx+ny] != '' && chess[this.posX+this.posY].colour != chess[nx+ny].colour && this.posX == nx && this.posY != ny && this.checkCap(this.posX, this.posY, nx, ny)==true || 
+      this.posX != nx && this.posY == ny && this.checkCap(this.posX, this.posY, nx, ny)==true && chess[nx+ny] != '' && chess[this.posX+this.posY].colour != chess[nx+ny].colour){
+        capture(this.posX, this.posY, nx, ny);
+      }
+      else if(this.posX != nx && this.posY != ny || this.checkPath(this.posX, this.posY, nx, ny)==false ){
+        outputWrong();
+        
+      }
+        else{
+        moveInArray(this.posX, this.posY, nx, ny);
+        }
+    }
+    checkPath(ox, oy, nx, ny){
+      let flag = true;
+      if(ox < nx){
+        do{
+          ox = nextChar(ox);
+          if(chess[ox+oy] != ''){
+            flag = false;
+            break;
+          }
+        }
+          while(ox < nx);
+      }
+      else if(ox > nx){
+        do{
+          ox = prevChar(ox);
+          if(chess[ox+oy] != ''){
+            flag = false;
+            break;
+          }
+        }
+            while(ox > nx);
+      }
+      else if(oy < ny){
+        do{
+          oy++;
+          if(chess[ox+oy] != ''){
+            flag = false;
+            break;
+          }
+        }
+          while(oy < ny);
+          }
+      else if(oy > ny){
+        do{
+          oy--;
+          if(chess[ox+oy] != ''){
+            flag = false;
+            break;
+          }
+        }
+          while(oy > ny);
+      
+          }
+      return flag;
+    }
+    checkCap(ox, oy, nx, ny){
+      let flag = true;
+  if(ox < nx){
+    do{
+      ox = nextChar(ox);
+      if(ox == nx){
+        break;
+      }
+      else if(chess[ox+oy] != ''){
+        flag = false;
+        break;
+      }
+    }
+      while(ox < prevChar(nx));
+  }
+  else if(ox > nx){
+    do{
+      ox = prevChar(ox);
+      if(ox == nx){
+        break;
+      }
+      else if(chess[ox+oy] != ''){
+        flag = false;
+        break;
+      }
+    }
+        while(ox > nextChar(nx));
+  }
+  else if(oy < ny){
+    do{
+      oy++;
+      if(oy == ny){
+        break;
+      }
+     else if(chess[ox+oy] != ''){
+        flag = false;
+        break;
+      }
+    }
+      while(oy < ny - 1);
+      }
+  else if(oy > ny){
+    do{
+      oy--;
+      if(oy == ny){
+        break;
+      }
+      else if(chess[ox+oy] != ''){
+        flag = false;
+        break;
+      }
+    }
+      while(oy > ny + 1);
+  
+      }
+  return flag;
+    }
 };
 
 class knight {
@@ -40,6 +220,27 @@ class knight {
         this.dead = dead; 
         this.name = 'knight';    
     };
+    movePiece(nx,ny){
+      if(chess[nx+ny] != '' && chess[this.posX+this.posY].colour != chess[nx+ny].colour && Math.abs((this.posX.charCodeAt(0) - 96) - (nx.charCodeAt(0) - 96)) == 2 && Math.abs(this.posY - ny == 1) && knightCheck(nx, ny) == true ||
+            chess[nx+ny] != '' && chess[this.posX+this.posY].colour != chess[nx+ny].colour && Math.abs((this.posX.charCodeAt(0) - 96) - (nx.charCodeAt(0) - 96)) == 1 && Math.abs(this.posY - ny) == 2){
+              capture(this.posX, this.posY, nx, ny);
+            }
+            else if(Math.abs((this.posX.charCodeAt(0) - 96) - (nx.charCodeAt(0) - 96)) == 2 && Math.abs(this.posY - ny == 1) && this.checkPath(nx, ny) == true ||
+            Math.abs((this.posX.charCodeAt(0) - 96) - (nx.charCodeAt(0) - 96)) == 1 && Math.abs(this.posY - ny) == 2){
+              moveInArray(this.posX, this.posY, nx, ny);
+            }
+            else{
+              outputWrong();
+  
+            }
+    }
+    checkPath(nx,ny){
+      let flag = true;
+      if(chess[nx,ny] !=''){
+        flag = false;
+      }
+      return flag;
+    }
 };
 
 class bishop {
@@ -50,6 +251,128 @@ class bishop {
         this.dead = dead; 
         this.name = 'bishop';    
     };
+    movePiece(nx, ny){
+      if(chess[nx+ny] != '' && chess[this.posX+this.PosY].colour != chess[nx+ny].colour && Math.abs((this.posX.charCodeAt(0)-96) - (nx.charCodeAt(0) - 96)) == Math.abs(this.PosY - ny) && this.checkCap(this.posX, this.PosY, nx, ny) == true){
+        capture(this.posX, this.PosY, nx, ny);
+      }
+      else if(Math.abs((this.posX.charCodeAt(0)-96) - (nx.charCodeAt(0) - 96)) == Math.abs(this.PosY - ny) && this.checkPath(this.posX, this.PosY, nx, ny) == true){
+        moveInArray(this.posX, this.PosY, nx, ny);
+      }
+      else{
+        outputWrong();
+        
+      }
+    }
+    checkPath(ox,oy,nx,ny){
+      let flag = true;
+      if(ox < nx && oy < ny){
+        do{
+        ox = nextChar(ox);
+        oy++;  
+        if(chess[ox+oy] != ''){
+          flag = false;
+          break;
+        }
+      }
+        while(oy < ny);
+      }
+      else if(ox < nx && oy > ny){
+        do{
+        ox = nextChar(ox);
+        oy--;
+        if(chess[ox+oy] != ''){
+          flag = false;
+          break;
+        }
+      }
+        while(oy>ny);
+    
+        }
+      else if(ox > nx && oy < ny){
+        do{
+        ox = prevChar(ox);
+        oy++;
+        if(chess[ox+oy] != ''){
+          flag = false;
+          break;
+      }
+        }
+        while(oy < ny);
+      }
+      else{
+        do{
+          ox = prevChar(ox);
+          oy++
+          if(chess[ox+oy] != ''){
+            flag = false;
+            break;
+          }
+        }
+        while(oy > ny);
+      }
+      return flag;
+    }
+    checkCap(ox,oy,nx,ny){
+      let flag = true;
+  if(ox < nx && oy < ny){
+    do{
+    ox = nextChar(ox);
+    oy++;  
+    if(ox == nx && oy == ny){
+      break;
+    }
+    else if(chess[ox+oy] != ''){
+      flag = false;
+      break;
+    }
+  }
+    while(oy < ny - 1);
+  }
+  else if(ox < nx && oy > ny){
+    do{
+    ox = nextChar(ox);
+    oy--;
+    if(ox == nx && oy == ny){
+      break;
+    }
+    else if(chess[ox+oy] != ''){
+      flag = false;
+      break;
+    }
+  }
+    while(oy>ny + 1);
+
+    }
+  else if(ox > nx && oy < ny){
+    do{
+    ox = prevChar(ox);
+    oy++;
+    if(ox == nx &&  oy == ny){
+      break;
+    }
+    else if(chess[ox+oy] != ''){
+      flag = false;
+      break;
+  }
+    }
+    while(oy < ny -1);
+  }
+  else{
+    do{
+      ox = prevChar(ox);
+      oy++
+      if(ox == nx && oy == ny){
+        break;
+      }
+      else if(chess[ox+oy] != ''){
+        flag = false;
+        break;
+      }
+    }
+    while(oy > ny + 1);
+  }
+  return flag;
+    }
 };
 
 class king {
@@ -60,6 +383,26 @@ class king {
         this.dead = dead; 
         this.name = 'king';   
     };
+    movePiece (nx,ny){
+      if (wr1.checkPath(this.posX,this.posY,nx, ny) == true && chess[nx+ny].name=='rook' && chess[this.posX+this.posY].colour == chess[nx,ny].colour){
+      castling(this.posX,this.posY,nx,ny);
+  }
+  if(chess[nx+ny] != '' && chess[this.posX+this.posY].colour != chess[nx+ny].colour && Math.abs(this.posX.charCodeAt(0) - this.posY.charCodeAt(0)) == 1 && ny == this.posY ||
+  chess[nx+ny] != '' && chess[this.posX+this.posY].colour != chess[nx+ny].colour && Math.abs(this.posY - ny) == 1 && this.posX == nx ||
+  chess[nx+ny] != '' && chess[this.posX+this.posY].colour != chess[nx+ny].colour && Math.abs(this.posY - ny) == 1 && Math.abs(this.posX.charCodeAt(0) - nx.charCodeAt(0)) == 1 ) {
+    capture(this.posX, this.posY, nx, ny);
+  }
+  
+  else if (chess[nx+ny] == '' && Math.abs(this.posX.charCodeAt(0) - this.posY.charCodeAt(0)) == 1 && ny == this.posY ||
+   chess[nx+ny] == '' && Math.abs(this.posY - ny) == 1 && this.posX == nx ||
+    chess[nx+ny] == '' && Math.abs(this.posY - ny) == 1 && Math.abs(this.posX.charCodeAt(0) - nx.charCodeAt(0)) == 1){
+      moveInArray(this.posX, this.posY, nx, ny);
+    } 
+    else{
+      outputWrong();
+      
+    }
+  }
 };
 class queen {
     constructor(posX, posY, colour, dead, name){
@@ -69,6 +412,22 @@ class queen {
         this.dead = dead; 
         this.name = 'queen';   
     };
+    movePiece(nx,ny){
+      if(chess[nx+ny] != '' && chess[this.posX+this.posY].colour != chess[nx+ny].colour && this.posX == nx && this.posY != ny && wr1.checkCap(this.posX, this.posY, nx, ny)==true || 
+      this.posX != nx && this.posY == ny && wr1.checkCap(this.posX, this.posY, nx, ny && chess[nx+ny] != '' && chess[this.posX+this.posY].colour != chess[nx+ny].colour)==true ||
+       chess[nx+ny] != '' && chess[this.posX+this.posY].colour != chess[nx+ny].colour && Math.abs((this.posX.charCodeAt(0)-96) - (nx.charCodeAt(0) - 96)) == Math.abs(this.posY - ny) && wb1.checkCap(this.posX, this.posY, nx, ny) == true){
+        capture(this.posX, this.posY, nx, ny);
+      }
+      else if(this.posX == nx && this.posY != ny && wr1.checkPath(this.posX, this.posY, nx, ny)==true || 
+      this.posX != nx && this.posY == ny && wr1.checkPath(this.posX, this.posY, nx, ny)==true || 
+      Math.abs((this.posX.charCodeAt(0)-96) - (nx.charCodeAt(0) - 96)) == Math.abs(this.posY - ny) && wb1.checkPath(this.posX, this.posY, nx, ny) == true){
+        moveInArray(this.posX, this.posY, nx, ny);
+      }
+        else{
+          outputWrong();
+          
+        }  
+    }
 };
 
 // Create chess board
@@ -138,10 +497,6 @@ function showPawns(){
     };
 
 
-  //  if (this.posX != new.posX && this.posY != new.posY){     Rook wrong move
-  //  if (this.posX - new.posX != this.posY - new.posY)   Bishop wrong move          use abs()
-  //  if (this.posX + new.posX == this.posX + 3 & this.posY + new.posY == this.posY + 1 || this.posX + new.posX == this.posX -3 & this.posY + new.posY == -1) 
-
 
 function moveInArray(ox, oy, nx, ny){
         if(nx>'h' || nx < 'a' || ny > 8 || ny < 1){
@@ -157,7 +512,6 @@ function moveInArray(ox, oy, nx, ny){
       chess[ox + oy].posY = ny;
       chess[nx + ny] = chess[ox + oy];
       chess[ox + oy] = '';
-      console.log('eh');
       turn = !turn;
       document.getElementById("asd").innerHTML = "Correct";
 
@@ -184,239 +538,16 @@ console.log (chess);
 
 // functions to check the path of pieces
 
-function rookCheckCap(ox,oy,nx,ny){
-  let flag = true;
-  if(ox < nx){
-    do{
-      ox = nextChar(ox);
-      if(ox == nx){
-        break;
-      }
-      else if(chess[ox+oy] != ''){
-        flag = false;
-        break;
-      }
-    }
-      while(ox < prevChar(nx));
-  }
-  else if(ox > nx){
-    do{
-      ox = prevChar(ox);
-      if(ox == nx){
-        break;
-      }
-      else if(chess[ox+oy] != ''){
-        flag = false;
-        break;
-      }
-    }
-        while(ox > nextChar(nx));
-  }
-  else if(oy < ny){
-    do{
-      oy++;
-      if(oy == ny){
-        break;
-      }
-     else if(chess[ox+oy] != ''){
-        flag = false;
-        break;
-      }
-    }
-      while(oy < ny - 1);
-      }
-  else if(oy > ny){
-    do{
-      oy--;
-      if(oy == ny){
-        break;
-      }
-      else if(chess[ox+oy] != ''){
-        flag = false;
-        break;
-      }
-    }
-      while(oy > ny + 1);
-  
-      }
-  return flag;
-}
 
-function rookCheck(ox, oy, nx, ny){  // works for pawn, too
-  let flag = true;
-if(ox < nx){
-  do{
-    ox = nextChar(ox);
-    if(chess[ox+oy] != ''){
-      flag = false;
-      break;
-    }
-  }
-    while(ox < nx);
-}
-else if(ox > nx){
-  do{
-    ox = prevChar(ox);
-    if(chess[ox+oy] != ''){
-      flag = false;
-      break;
-    }
-  }
-      while(ox > nx);
-}
-else if(oy < ny){
-  do{
-    oy++;
-    if(chess[ox+oy] != ''){
-      flag = false;
-      break;
-    }
-  }
-    while(oy < ny);
-    }
-else if(oy > ny){
-  do{
-    oy--;
-    if(chess[ox+oy] != ''){
-      flag = false;
-      break;
-    }
-  }
-    while(oy > ny);
 
-    }
-return flag;
-  }
-function bishopCheckCap(ox,oy,nx,ny){
-  let flag = true;
-  if(ox < nx && oy < ny){
-    do{
-    ox = nextChar(ox);
-    oy++;  
-    if(ox == nx && oy == ny){
-      break;
-    }
-    else if(chess[ox+oy] != ''){
-      flag = false;
-      break;
-    }
-  }
-    while(oy < ny - 1);
-  }
-  else if(ox < nx && oy > ny){
-    do{
-    ox = nextChar(ox);
-    oy--;
-    if(ox == nx && oy == ny){
-      break;
-    }
-    else if(chess[ox+oy] != ''){
-      flag = false;
-      break;
-    }
-  }
-    while(oy>ny + 1);
 
-    }
-  else if(ox > nx && oy < ny){
-    do{
-    ox = prevChar(ox);
-    oy++;
-    if(ox == nx &&  oy == ny){
-      break;
-    }
-    else if(chess[ox+oy] != ''){
-      flag = false;
-      break;
-  }
-    }
-    while(oy < ny -1);
-  }
-  else{
-    do{
-      ox = prevChar(ox);
-      oy++
-      if(ox == nx && oy == ny){
-        break;
-      }
-      else if(chess[ox+oy] != ''){
-        flag = false;
-        break;
-      }
-    }
-    while(oy > ny + 1);
-  }
-  return flag;
-}
-
-function bishopCheck(ox, oy, nx, ny){
-  let flag = true;
-  if(ox < nx && oy < ny){
-    do{
-    ox = nextChar(ox);
-    oy++;  
-    if(chess[ox+oy] != ''){
-      flag = false;
-      break;
-    }
-  }
-    while(oy < ny);
-    console.log(flag);
-  }
-  else if(ox < nx && oy > ny){
-    do{
-    ox = nextChar(ox);
-    oy--;
-    if(chess[ox+oy] != ''){
-      flag = false;
-      break;
-    }
-  }
-    while(oy>ny);
-
-    }
-  else if(ox > nx && oy < ny){
-    do{
-    ox = prevChar(ox);
-    oy++;
-    if(chess[ox+oy] != ''){
-      flag = false;
-      break;
-  }
-    }
-    while(oy < ny);
-  }
-  else{
-    do{
-      ox = prevChar(ox);
-      oy++
-      if(chess[ox+oy] != ''){
-        flag = false;
-        break;
-      }
-    }
-    while(oy > ny);
-  }
-  return flag;
-}
-
-function knightCheck(nx,ny){
-  let flag = true;
-  if(chess[nx,ny] !=''){
-    flag = false;
-  }
-  return flag;
-};
 
 
 function castling(ox,oy,nx,ny){
-  let swap = [];
   buff = chess[ox+oy];
-  console.log(buff);
   chess[ox+oy] = chess[nx+ny];
   chess[nx+ny] = buff[0];
-  console.log(chess[ox+oy]);
-  console.log(chess[nx+ny]);
+
 }
 
    
@@ -429,113 +560,11 @@ function castling(ox,oy,nx,ny){
         let oldPosY = varies[1];
         let newPosX = varies[3];
         let newPosY = varies[4];
-         let figureType = chess[oldPosX + oldPosY].name;
-        switch(figureType){
-        case 'rook':
-          if(chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && oldPosX == newPosX && oldPosY != newPosY && rookCheckCap(oldPosX, oldPosY, newPosX, newPosY)==true || oldPosX != newPosX && oldPosY == newPosY && rookCheckCap(oldPosX, oldPosY, newPosX, newPosY)==true && chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour){
-            capture(oldPosX, oldPosY, newPosX, newPosY);
-          }
-          else if(oldPosX != newPosX && oldPosY != newPosY || rookCheck(oldPosX, oldPosY, newPosX, newPosY)==false ){
-            console.log('WRONG');
-            document.getElementById("asd").innerHTML = "Wrong move";
-          }
-            else{
-            moveInArray(oldPosX, oldPosY, newPosX, newPosY);
-            }
-            break;
-
-          case 'bishop':
-            if(chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && Math.abs((oldPosX.charCodeAt(0)-96) - (newPosX.charCodeAt(0) - 96)) == Math.abs(oldPosY - newPosY) && bishopCheckCap(oldPosX, oldPosY, newPosX, newPosY) == true){
-              capture(oldPosX, oldPosY, newPosX, newPosY);
-            }
-            else if(Math.abs((oldPosX.charCodeAt(0)-96) - (newPosX.charCodeAt(0) - 96)) == Math.abs(oldPosY - newPosY) && bishopCheckCap(oldPosX, oldPosY, newPosX, newPosY) == true){
-              moveInArray(oldPosX, oldPosY, newPosX, newPosY);
-            }
-            else{
-              console.log('WRONG');
-              document.getElementById("asd").innerHTML = "Wrong move";
-            }
-          break;
-          case 'queen':
-            if(chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && oldPosX == newPosX && oldPosY != newPosY && rookCheckCap(oldPosX, oldPosY, newPosX, newPosY)==true || oldPosX != newPosX && oldPosY == newPosY && rookCheckCap(oldPosX, oldPosY, newPosX, newPosY && chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour)==true || chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && Math.abs((oldPosX.charCodeAt(0)-96) - (newPosX.charCodeAt(0) - 96)) == Math.abs(oldPosY - newPosY) && bishopCheckCap(oldPosX, oldPosY, newPosX, newPosY) == true){
-              capture(oldPosX, oldPosY, newPosX, newPosY);
-            }
-            else if(oldPosX == newPosX && oldPosY != newPosY && rookCheck(oldPosX, oldPosY, newPosX, newPosY)==true || oldPosX != newPosX && oldPosY == newPosY && rookCheck(oldPosX, oldPosY, newPosX, newPosY)==true || Math.abs((oldPosX.charCodeAt(0)-96) - (newPosX.charCodeAt(0) - 96)) == Math.abs(oldPosY - newPosY) && bishopCheck(oldPosX, oldPosY, newPosX, newPosY) == true){
-              moveInArray(oldPosX, oldPosY, newPosX, newPosY);
-            }
-              else{
-                console.log('WRONG');
-                document.getElementById("asd").innerHTML = "Wrong move";
-              }  
-            break;
-          case 'knight':
-            if(chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && Math.abs((oldPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96)) == 2 && Math.abs(oldPosY - newPosY == 1) && knightCheck(newPosX, newPosY) == true ||
-            chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && Math.abs((oldPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96)) == 1 && Math.abs(oldPosY - newPosY) == 2){
-              capture(oldPosX, oldPosY, newPosX, newPosY);
-            }
-            else if(Math.abs((oldPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96)) == 2 && Math.abs(oldPosY - newPosY == 1) && knightCheck(newPosX, newPosY) == true ||
-            Math.abs((oldPosX.charCodeAt(0) - 96) - (newPosX.charCodeAt(0) - 96)) == 1 && Math.abs(oldPosY - newPosY) == 2){
-              moveInArray(oldPosX, oldPosY, newPosX, newPosY);
-            }
-            else{
-              console.log('WRONG');
-              document.getElementById("asd").innerHTML = "Wrong move";
-            }
-
-          break;
-          case 'pawn':
-            if (chess[oldPosX+oldPosY].colour == 'white'){
-              if(chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour  && newPosY - oldPosY == 1 && Math.abs(oldPosX.charCodeAt(0) - newPosX.charCodeAt(0)) == 1){
-                capture(oldPosX, oldPosY, newPosX, newPosY);
-              }
-              else if(oldPosX == newPosX && oldPosY == 2 && newPosY - oldPosY < 3 && rookCheck(oldPosX, oldPosY, newPosX, newPosY) == true){
-                moveInArray(oldPosX, oldPosY, newPosX, newPosY);
-              }
-              else if(oldPosX == newPosX && newPosY - oldPosY < 2 && rookCheck(oldPosX, oldPosY, newPosX, newPosY) == true){
-                moveInArray(oldPosX, oldPosY, newPosX, newPosY);
-              }
-              else{
-                console.log('WRONG');
-                document.getElementById("asd").innerHTML = "Wrong move";
-            }
-            }
-            else if(chess[oldPosX+oldPosY].colour == 'black'){
-              if(chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour  && oldPosY - newPosY == 1 && Math.abs(oldPosX.charCodeAt(0) - newPosX.charCodeAt(0)) == 1){
-                capture(oldPosX, oldPosY, newPosX, newPosY);
-              }
-              else if(oldPosX == newPosX && oldPosY == 7 && oldPosY - newPosY < 3 && rookCheck(oldPosX, oldPosY, newPosX, newPosY) == true){
-                moveInArray(oldPosX, oldPosY, newPosX, newPosY);
-              }
-              else if(oldPosX == newPosX && oldPosY - newPosY < 2 && rookCheck(oldPosX, oldPosY, newPosX, newPosY) == true){
-                moveInArray(oldPosX, oldPosY, newPosX, newPosY);
-              }
-              else{
-                console.log('WRONG');
-                document.getElementById("asd").innerHTML = "Wrong move";
-            }
-            }
-          break;
-          case 'king':
-            if (rookCheck(oldPosX,oldPosY,newPosX, newPosY) == true && chess[newPosX+newPosY].name=='rook' && chess[oldPosX+oldPosY].colour == chess[newPosX,newPosY].colour){
-                castling(oldPosX,oldPosY,newPosX,newPosY);
-            }
-            if(chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && Math.abs(oldPosX.charCodeAt(0) - oldPosY.charCodeAt(0)) == 1 && newPosY == oldPosY ||
-            chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && Math.abs(oldPosY - newPosY) == 1 && oldPosX == newPosX ||
-            chess[newPosX+newPosY] != '' && chess[oldPosX+oldPosY].colour != chess[newPosX+newPosY].colour && Math.abs(oldPosY - newPosY) == 1 && Math.abs(oldPosX.charCodeAt(0) - newPosX.charCodeAt(0)) == 1 ) {
-              capture(oldPosX, oldPosY, newPosX, newPosY);
-            }
-            
-            else if (chess[newPosX+newPosY] == '' && Math.abs(oldPosX.charCodeAt(0) - oldPosY.charCodeAt(0)) == 1 && newPosY == oldPosY || chess[newPosX+newPosY] == '' && Math.abs(oldPosY - newPosY) == 1 && oldPosX == newPosX || chess[newPosX+newPosY] == '' && Math.abs(oldPosY - newPosY) == 1 && Math.abs(oldPosX.charCodeAt(0) - newPosX.charCodeAt(0)) == 1){
-                moveInArray(oldPosX, oldPosY, newPosX, newPosY);
-              } 
-              else{
-                console.log('WRONG');
-                document.getElementById("asd").innerHTML = "Wrong move";
-              }
-
-          break;
-          default:
-            console.log('empty square');
-            document.getElementById("asd").innerHTML = "Empty square";
-          }
-          };
+        if(chess[oldPosX + oldPosY] == ''){
+          document.getElementById("asd").innerHTML = "Empty square";
+        }
+        else{
+        chess[oldPosX + oldPosY].movePiece(newPosX,newPosY);
+   }
+  }
+      
